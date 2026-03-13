@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mirai365 - 未来を変える思考法</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f0fdfa; /* Light cyan bg */
+            color: #334155;
+            padding-bottom: 100px; /* Space for bottom nav */
+            overscroll-behavior-y: none;
+        }
+
+        /* Brand Colors */
+        .text-brand-blue { color: #0ea5e9; }
+        .bg-brand-gradient { background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%); }
+        .text-gradient {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Utilities */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e0f2fe;
+            box-shadow: 0 4px 20px -5px rgba(6, 182, 212, 0.15);
+            border-radius: 16px;
+        }
+        .input-clean {
+            background: #f1f5f9;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+        .input-clean:focus {
+            background: #fff;
+            border-color: #22d3ee;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+        }
+
+        /* Hanamaru Animation */
+        @keyframes stamp-in {
+            0% { opacity: 0; transform: scale(3) rotate(-30deg); }
+            60% { opacity: 1; transform: scale(0.8) rotate(-5deg); }
+            100% { transform: scale(1) rotate(-15deg); }
+        }
+        .hanamaru-mark {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            color: #ef4444;
+            font-size: 8rem; font-weight: 900;
+            z-index: 50;
+            animation: stamp-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            border: 6px solid #ef4444; border-radius: 50%;
+            width: 150px; height: 150px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .hanamaru-mark::after {
+            content: "大変よくできました";
+            font-size: 11px; position: absolute; bottom: 25px;
+            color: #ef4444; -webkit-text-fill-color: #ef4444;
+        }
+
+        /* Month Tab */
+        .month-tab.active {
+            background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+            color: white; font-weight: bold;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <header class="fixed top-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div class="max-w-md mx-auto pt-3 pb-2 px-4 relative">
+            
+            <p class="text-[10px] text-slate-500 font-bold mb-1 text-center tracking-wider pt-1">『できたこと』に◯するだけ！</p>
+            
+            <div class="flex flex-col items-center justify-center">
+                <div class="flex items-center gap-2 mb-1">
+                    <svg class="w-8 h-8 text-cyan-500" viewBox="0 0 100 100" fill="currentColor">
+                        <path d="M50 90 C 50 90, 45 60, 20 40 C 10 30, 10 10, 35 25 C 45 32, 50 50, 50 50 C 50 50, 55 32, 75 15 C 90 5, 95 25, 80 40 C 60 55, 52 80, 50 90 Z" fill="url(#logoGradient)"/>
+                        <defs><linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1"/><stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1"/></linearGradient></defs>
+                    </svg>
+                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Mirai<span class="text-brand-blue">365</span></h1>
+                </div>
+                <h2 class="text-lg font-bold text-gradient">未来を変える思考法</h2>
+            </div>
+        </div>
+
+        <div class="w-full bg-white border-t border-slate-50 mt-2">
+            <div class="max-w-md mx-auto flex overflow-x-auto hide-scroll py-2 px-2 gap-2" id="month-nav">
+                </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto pt-40 px-4 pb-20">
+        
+        <div id="view-setup" class="hidden fade-in">
+            <div class="text-center mb-6">
+                <span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-1 rounded font-bold">Step 1</span>
+                <h2 class="text-xl font-bold mt-2 text-slate-700">未来の設計図</h2>
+                <p class="text-xs text-slate-400">2026年の理想の自分を描きましょう</p>
+            </div>
+
+            <div class="glass-card p-5 mb-6">
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Target Year</label>
+                <select id="yearSelect" class="w-full input-clean rounded-lg p-3 font-bold text-cyan-600">
+                    <option value="2026">2026年</option>
+                    <option value="2027">2027年</option>
+                    <option value="2028">2028年</option>
+                    <option value="2029">2029年</option>
+                    <option value="2030">2030年</option>
+                </select>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-sm font-bold text-slate-600 mb-3 flex items-center"><i class="fas fa-crown text-cyan-400 mr-2"></i>理想の自分 (5つ)</h3>
+                <input type="text" placeholder="Work: 年商1億円達成..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-work">
+                <input type="text" placeholder="Work: 書籍を出版する..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-work">
+                <input type="text" placeholder="Work: 優秀な右腕を採用..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-work">
+                <input type="text" placeholder="Private: ハワイへ移住..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-private">
+                <input type="text" placeholder="Private: 体脂肪率10%..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-private">
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-sm font-bold text-slate-600 mb-3 flex items-center"><i class="fas fa-heart text-pink-400 mr-2"></i>その時の感情 (5つ)</h3>
+                <input type="text" placeholder="自信に満ち溢れている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
+                <input type="text" placeholder="経済的な不安がない..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
+                <input type="text" placeholder="家族と笑い合っている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
+                <input type="text" placeholder="感謝で泣いている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
+                <input type="text" placeholder="毎日ワクワクしている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-sm font-bold text-slate-600 mb-3 flex items-center"><i class="fas fa-shoe-prints text-blue-400 mr-2"></i>必要な行動 (5つ)</h3>
+                <input type="text" placeholder="毎日コードを書く..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
+                <input type="text" placeholder="週1で交流会に参加..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
+                <input type="text" placeholder="月2冊本を読む..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
+                <input type="text" placeholder="週3回ジムに行く..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
+                <input type="text" placeholder="スマホを夜見ない..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
+            </div>
+
+            <button onclick="saveSetup()" class="w-full bg-brand-gradient text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform">
+                未来設定を保存
+            </button>
+        </div>
+
+        <div id="view-dashboard" class="fade-in">
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <p class="text-xs text-slate-400 font-bold mb-1">TARGET MONTH</p>
+                    <h2 class="text-3xl font-black text-slate-800"><span id="display-month">1</span>月</h2>
+                </div>
+                <button id="toggle-mode-btn" onclick="toggleReviewMode()" class="bg-white text-slate-600 border border-slate-200 px-4 py-2 rounded-full text-xs font-bold shadow-sm hover:bg-slate-50 transition">
+                    <i class="fas fa-check-circle mr-1 text-cyan-500"></i>振り返りモード
+                </button>
+            </div>
+
+            <div id="mode-edit">
+                <div class="glass-card p-6 mb-4 border-l-4 border-cyan-400">
+                    <div class="flex justify-between mb-3">
+                        <span class="text-xs font-bold text-cyan-600 bg-cyan-50 px-2 py-1 rounded">WORK</span>
+                        <span class="text-[10px] text-slate-400">仕事の目標 (2つ)</span>
+                    </div>
+                    <input type="text" id="goal-w1" placeholder="目標1：新規案件を獲得" class="w-full input-clean rounded-lg p-3 mb-3 text-sm">
+                    <input type="text" id="goal-w2" placeholder="目標2：サイトを公開" class="w-full input-clean rounded-lg p-3 text-sm">
+                </div>
+
+                <div class="glass-card p-6 mb-8 border-l-4 border-green-400">
+                    <div class="flex justify-between mb-3">
+                        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">PRIVATE</span>
+                        <span class="text-[10px] text-slate-400">プライベートの目標 (1つ)</span>
+                    </div>
+                    <input type="text" id="goal-p1" placeholder="目標3：週末は映画を見る" class="w-full input-clean rounded-lg p-3 text-sm">
+                </div>
+
+                <div class="text-center">
+                    <button onclick="saveMonthlyGoals()" class="bg-slate-800 text-white font-bold py-3 px-8 rounded-full shadow-lg active:scale-95 transition-transform">
+                        この目標で決定する
+                    </button>
+                </div>
+            </div>
+
+            <div id="mode-review" class="hidden">
+                <div class="bg-gradient-to-r from-cyan-50 to-blue-50 p-4 rounded-xl mb-6 text-center border border-cyan-100">
+                    <p class="text-sm font-bold text-cyan-800">できたことだけに◯をつける</p>
+                    <p class="text-[10px] text-slate-500 mt-1">できなかったことは無視してOK！</p>
+                </div>
+
+                <div class="space-y-4 relative min-h-[300px]">
+                    <div id="review-list" class="space-y-4"></div>
+                    <div id="hanamaru-stamp" class="hidden hanamaru-mark">💮</div>
+                </div>
+
+                <button onclick="finishReview()" class="w-full bg-brand-gradient text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-500/30 mt-6 active:scale-95 transition-transform">
+                    今月を完了する
+                </button>
+            </div>
+        </div>
+
+        <div id="view-menu" class="hidden fade-in">
+            <div class="text-center mb-6">
+                <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded font-bold">Menu</span>
+                <h2 class="text-xl font-bold mt-2 text-slate-700">メニュー・設定</h2>
+            </div>
+
+            <div class="glass-card p-6 mb-6">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 border-b border-slate-100 pb-2">💡 Mirai365の使い方</h3>
+                <div class="space-y-6">
+                    <div class="flex gap-3">
+                        <div class="text-2xl bg-cyan-50 w-10 h-10 flex items-center justify-center rounded-lg">🎯</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-cyan-600">1. 未来を決める</h4>
+                            <p class="text-xs text-slate-500 mt-1">「未来設定」タブで、2026年などの理想の姿・感情・行動を5つずつ書き出します。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <div class="text-2xl bg-blue-50 w-10 h-10 flex items-center justify-center rounded-lg">📅</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-blue-600">2. 今月の目標</h4>
+                            <p class="text-xs text-slate-500 mt-1">未来から逆算して、今月やる「仕事2つ・プライベート1つ」の目標を決めます。</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <div class="text-2xl bg-red-50 w-10 h-10 flex items-center justify-center rounded-lg">💮</div>
+                        <div>
+                            <h4 class="font-bold text-sm text-red-500">3. 振り返り</h4>
+                            <p class="text-xs text-slate-500 mt-1">月末に「振り返りモード」へ。できたことだけに◯をつけて、できないことは無視！自己肯定感を高めます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 mb-6">
+                <h3 class="text-sm font-bold text-slate-700 mb-4 border-b border-slate-100 pb-2">⚙️ 設定・デモ</h3>
+                
+                <p class="text-[10px] text-slate-400 mb-3">デモデータを読み込んで動作を確認したり、データをリセットして最初から始めることができます。</p>
+
+                <button onclick="loadDemoData()" class="w-full bg-cyan-50 text-cyan-700 border border-cyan-200 font-bold py-3 rounded-xl mb-3 flex items-center justify-center gap-2 active:scale-95 transition">
+                    <i class="fas fa-magic"></i> デモデータをロード
+                </button>
+                
+                <button onclick="resetData()" class="w-full bg-slate-50 text-slate-500 border border-slate-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition hover:bg-red-50 hover:text-red-500 hover:border-red-200">
+                    <i class="fas fa-trash-alt"></i> データをリセット
+                </button>
+            </div>
+            
+            <div class="text-center text-[10px] text-slate-300">
+                Mirai365 v1.0
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur border-t border-slate-100 pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.03)] z-50">
+        <div class="max-w-md mx-auto flex justify-between py-2 px-6">
+            
+            <button onclick="switchView('dashboard')" class="nav-btn active flex flex-col items-center w-1/3 text-slate-400 transition hover:text-cyan-500">
+                <div class="mb-1 text-xl"><i class="fas fa-calendar-day"></i></div>
+                <span class="text-[9px] font-bold">今月の目標</span>
+            </button>
+            
+            <button onclick="switchView('setup')" class="nav-btn flex flex-col items-center w-1/3 text-slate-400 transition hover:text-cyan-500">
+                <div class="mb-1 text-xl"><i class="fas fa-layer-group"></i></div>
+                <span class="text-[9px] font-bold">未来設定</span>
+            </button>
+
+            <button onclick="switchView('menu')" class="nav-btn flex flex-col items-center w-1/3 text-slate-400 transition hover:text-cyan-500">
+                <div class="mb-1 text-xl"><i class="fas fa-info-circle"></i></div>
+                <span class="text-[9px] font-bold">メニュー</span>
+            </button>
+
+        </div>
+    </nav>
+
+    <script>
+        const DB_KEY = 'mirai365_v4_data';
+        let currentMonth = new Date().getMonth() + 1;
+        let appData = {
+            targetYear: '2026',
+            vision: { work:['','',''], private:['',''], feeling:['','','','',''], action:['','','','',''] },
+            monthly: {} 
+        };
+        for(let i=1; i<=12; i++) appData.monthly[i] = { w1:'', w2:'', p1:'', done:[false,false,false] };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderMonthNav();
+            selectMonth(currentMonth);
+            renderSetup();
+        });
+
+        // --- Core Functions ---
+        function loadData() {
+            const stored = localStorage.getItem(DB_KEY);
+            if(stored) {
+                const parsed = JSON.parse(stored);
+                appData = { ...appData, ...parsed };
+                for(let i=1; i<=12; i++) if(!appData.monthly[i]) appData.monthly[i] = { w1:'', w2:'', p1:'', done:[false,false,false] };
+            }
+        }
+        function saveData() { localStorage.setItem(DB_KEY, JSON.stringify(appData)); }
+
+        // --- View Switching Logic ---
+        function switchView(view) {
+            // Hide all views
+            document.getElementById('view-setup').classList.add('hidden');
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-menu').classList.add('hidden');
+            
+            // Show target view
+            document.getElementById(`view-${view}`).classList.remove('hidden');
+            
+            // Update Nav Icons
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('text-cyan-500', 'active');
+                b.classList.add('text-slate-400');
+            });
+            
+            // Find active index based on view name
+            let idx = 0;
+            if(view === 'dashboard') idx = 0;
+            if(view === 'setup') idx = 1;
+            if(view === 'menu') idx = 2;
+
+            const activeBtn = document.querySelectorAll('.nav-btn')[idx];
+            activeBtn.classList.remove('text-slate-400');
+            activeBtn.classList.add('text-cyan-500', 'active');
+            
+            window.scrollTo(0,0);
+        }
+
+        // --- Demo & Settings Logic ---
+        function loadDemoData() {
+            if(!confirm('現在のデータを上書きして、デモデータを読み込みますか？')) return;
+            
+            appData.targetYear = '2026';
+            appData.vision.work = ['年商1億円を達成して法人化', '業界最大手のカンファレンスで登壇', '信頼できる右腕となるNo.2を採用'];
+            appData.vision.private = ['家族全員でハワイに2週間滞在', '体脂肪率12%の健康な体を手に入れる'];
+            appData.vision.feeling = ['根拠のない自信に満ち溢れている', '金銭的な不安が消え、穏やかだ', '仲間への感謝で胸がいっぱいだ', '次の挑戦にワクワクしている', '毎日ぐっすり眠れている'];
+            appData.vision.action = ['毎日コードを100行以上書く', '週に1回、異業種の交流会に参加', 'マーケティングの専門書を月2冊読む', '週3回ジムに通って汗を流す', '日曜日の午前中はスマホをOFFにする'];
+            
+            appData.monthly[currentMonth].w1 = '新規クライアントに5件提案する';
+            appData.monthly[currentMonth].w2 = 'アプリのプロトタイプを完成させる';
+            appData.monthly[currentMonth].p1 = '週末に映画を1本見る';
+
+            saveData();
+            alert('デモデータを読み込みました！「未来設定」や「今月の目標」を確認してください。');
+            switchView('dashboard');
+            selectMonth(currentMonth); // Refresh inputs
+            renderSetup(); // Refresh setup inputs
+        }
+
+        function resetData() {
+            if(!confirm('本当に全てのデータを削除して初期化しますか？')) return;
+            localStorage.removeItem(DB_KEY);
+            location.reload();
+        }
+
+        // --- Navigation Logic ---
+        function renderMonthNav() {
+            const nav = document.getElementById('month-nav');
+            let html = '';
+            for(let i=1; i<=12; i++) {
+                html += `<button onclick="selectMonth(${i})" class="month-tab shrink-0 px-4 py-2 rounded-full text-sm font-medium text-slate-500 transition-all hover:bg-slate-100" id="mbtn-${i}">${i}月</button>`;
+            }
+            nav.innerHTML = html;
+        }
+
+        function selectMonth(m) {
+            currentMonth = m;
+            document.querySelectorAll('.month-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(`mbtn-${m}`).classList.add('active');
+            document.getElementById('display-month').innerText = m;
+            document.getElementById(`mbtn-${m}`).scrollIntoView({behavior: 'smooth', inline: 'center', block: 'nearest'});
+
+            const data = appData.monthly[m];
+            document.getElementById('goal-w1').value = data.w1;
+            document.getElementById('goal-w2').value = data.w2;
+            document.getElementById('goal-p1').value = data.p1;
+
+            document.getElementById('mode-edit').classList.remove('hidden');
+            document.getElementById('mode-review').classList.add('hidden');
+            document.getElementById('toggle-mode-btn').innerHTML = '<i class="fas fa-check-circle mr-1 text-cyan-500"></i>振り返りモード';
+            document.getElementById('hanamaru-stamp').classList.add('hidden');
+        }
+
+        // --- Core Action Logic ---
+        function saveMonthlyGoals() {
+            const m = currentMonth;
+            appData.monthly[m].w1 = document.getElementById('goal-w1').value;
+            appData.monthly[m].w2 = document.getElementById('goal-w2').value;
+            appData.monthly[m].p1 = document.getElementById('goal-p1').value;
+            saveData();
+            
+            const btn = document.querySelector('#mode-edit button');
+            const originalText = btn.innerText;
+            btn.innerText = '保存しました！';
+            btn.classList.add('bg-green-500');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-500');
+            }, 1000);
+        }
+
+        function toggleReviewMode() {
+            const edit = document.getElementById('mode-edit');
+            const review = document.getElementById('mode-review');
+            const btn = document.getElementById('toggle-mode-btn');
+
+            if(review.classList.contains('hidden')) {
+                const mData = appData.monthly[currentMonth];
+                if(!mData.w1 && !mData.w2 && !mData.p1) {
+                    alert('まずは目標を入力しましょう！');
+                    return;
+                }
+                edit.classList.add('hidden');
+                review.classList.remove('hidden');
+                btn.innerHTML = '<i class="fas fa-pen mr-1"></i>編集に戻る';
+                renderReviewList();
+            } else {
+                edit.classList.remove('hidden');
+                review.classList.add('hidden');
+                btn.innerHTML = '<i class="fas fa-check-circle mr-1 text-cyan-500"></i>振り返りモード';
+                document.getElementById('hanamaru-stamp').classList.add('hidden');
+            }
+        }
+
+        function renderReviewList() {
+            const mData = appData.monthly[currentMonth];
+            const list = document.getElementById('review-list');
+            const items = [
+                { txt: mData.w1, type: 'WORK', idx: 0, color: 'text-cyan-500' },
+                { txt: mData.w2, type: 'WORK', idx: 1, color: 'text-cyan-500' },
+                { txt: mData.p1, type: 'PRIVATE', idx: 2, color: 'text-green-500' }
+            ];
+
+            list.innerHTML = items.map(item => {
+                if(!item.txt) return '';
+                const isDone = mData.done[item.idx];
+                const borderClass = isDone ? 'border-cyan-400 ring-2 ring-cyan-100' : 'border-slate-100';
+                const opacityClass = isDone ? 'opacity-100 scale-100' : 'opacity-0 scale-0';
+
+                return `
+                <div class="glass-card p-4 flex justify-between items-center cursor-pointer transition-all active:scale-95 ${borderClass}" onclick="toggleCheck(${item.idx}, this)">
+                    <div>
+                        <span class="text-[10px] font-bold ${item.color}">${item.type}</span>
+                        <p class="text-slate-700 font-bold text-lg">${item.txt}</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 flex items-center justify-center bg-white shadow-sm">
+                        <i class="fas fa-check text-cyan-500 text-xl transition-all duration-300 transform ${opacityClass}"></i>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function toggleCheck(idx, el) {
+            const mData = appData.monthly[currentMonth];
+            mData.done[idx] = !mData.done[idx];
+            saveData();
+            // Re-render styles logic simplified for brevity
+            const icon = el.querySelector('.fa-check');
+            if(mData.done[idx]) {
+                icon.classList.remove('opacity-0', 'scale-0');
+                icon.classList.add('opacity-100', 'scale-100');
+                el.classList.remove('border-slate-100');
+                el.classList.add('border-cyan-400', 'ring-2', 'ring-cyan-100');
+                confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 }, colors: ['#06b6d4', '#3b82f6'] });
+            } else {
+                icon.classList.add('opacity-0', 'scale-0');
+                icon.classList.remove('opacity-100', 'scale-100');
+                el.classList.remove('border-cyan-400', 'ring-2', 'ring-cyan-100');
+                el.classList.add('border-slate-100');
+            }
+        }
+
+        function finishReview() {
+            const mData = appData.monthly[currentMonth];
+            if(mData.done.some(d=>d)) {
+                document.getElementById('hanamaru-stamp').classList.remove('hidden');
+                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#ef4444', '#06b6d4', '#fbbf24'] });
+                setTimeout(() => {
+                    if(confirm(`${currentMonth}月完了！次の月に進みますか？`)) selectMonth(currentMonth<12?currentMonth+1:1);
+                    else toggleReviewMode();
+                }, 3000);
+            } else {
+                alert('できたことがなくても大丈夫。来月へ進みましょう！');
+                selectMonth(currentMonth<12?currentMonth+1:1);
+            }
+        }
+
+        function saveSetup() {
+            appData.targetYear = document.getElementById('yearSelect').value;
+            const collect = (cls) => Array.from(document.querySelectorAll(cls)).map(e=>e.value);
+            appData.vision.work = collect('.vision-work');
+            appData.vision.private = collect('.vision-private');
+            appData.vision.feeling = collect('.vision-feeling');
+            appData.vision.action = collect('.vision-action');
+            saveData();
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            alert('未来設定を保存しました！');
+        }
+        
+        function renderSetup() {
+            document.getElementById('yearSelect').value = appData.targetYear;
+            const fill = (cls, arr) => document.querySelectorAll(cls).forEach((e,i) => { if(arr[i]) e.value = arr[i] });
+            fill('.vision-work', appData.vision.work);
+            fill('.vision-private', appData.vision.private);
+            fill('.vision-feeling', appData.vision.feeling);
+            fill('.vision-action', appData.vision.action);
+        }
+    </script>
+</body>
+</html>
