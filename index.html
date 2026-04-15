@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mirai365 - 未来を変える思考法</title>
+    <title>Mirai365 PRO - 未来を変える思考法</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -11,17 +11,21 @@
     <style>
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            background-color: #f0fdfa; /* Light cyan bg */
+            background-color: #f8fafc;
+            background-image: radial-gradient(circle at top right, #e0f2fe 0%, transparent 40%),
+                              radial-gradient(circle at bottom left, #ecfeff 0%, transparent 40%);
             color: #334155;
-            padding-bottom: 100px; /* Space for bottom nav */
+            padding-bottom: 100px;
             overscroll-behavior-y: none;
+            min-height: 100vh;
         }
 
-        /* Brand Colors */
+        /* Brand Colors & Premium Gradients */
         .text-brand-blue { color: #0ea5e9; }
-        .bg-brand-gradient { background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%); }
+        .bg-brand-gradient { background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%); }
+        .bg-premium-gradient { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
         .text-gradient {
-            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -30,23 +34,34 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Glass Card */
+        /* Premium Glass Card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #e0f2fe;
-            box-shadow: 0 4px 20px -5px rgba(6, 182, 212, 0.15);
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.15), 
+                        inset 0 1px 0 rgba(255,255,255,1);
+            border-radius: 20px;
         }
+        
+        /* Progress Ring */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s ease-in-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
         .input-clean {
-            background: #f1f5f9;
+            background: rgba(241, 245, 249, 0.8);
             border: 1px solid transparent;
             transition: all 0.2s;
         }
         .input-clean:focus {
             background: #fff;
-            border-color: #22d3ee;
+            border-color: #38bdf8;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
         }
 
         /* Hanamaru Animation */
@@ -66,8 +81,8 @@
             border: 6px solid #ef4444; border-radius: 50%;
             width: 150px; height: 150px;
             display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.9);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
         }
         .hanamaru-mark::after {
             content: "大変よくできました";
@@ -75,54 +90,70 @@
             color: #ef4444; -webkit-text-fill-color: #ef4444;
         }
 
-        /* Month Tab */
         .month-tab.active {
-            background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             color: white; font-weight: bold;
-            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 10px rgba(30, 41, 59, 0.3);
         }
 
         .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <header class="fixed top-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div class="max-w-md mx-auto pt-3 pb-2 px-4 relative">
-            
-            <p class="text-[10px] text-slate-500 font-bold mb-1 text-center tracking-wider pt-1">『できたこと』に◯するだけ！</p>
-            
-            <div class="flex flex-col items-center justify-center">
-                <div class="flex items-center gap-2 mb-1">
-                    <svg class="w-8 h-8 text-cyan-500" viewBox="0 0 100 100" fill="currentColor">
-                        <path d="M50 90 C 50 90, 45 60, 20 40 C 10 30, 10 10, 35 25 C 45 32, 50 50, 50 50 C 50 50, 55 32, 75 15 C 90 5, 95 25, 80 40 C 60 55, 52 80, 50 90 Z" fill="url(#logoGradient)"/>
-                        <defs><linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1"/><stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1"/></linearGradient></defs>
-                    </svg>
-                    <h1 class="text-2xl font-black text-slate-800 tracking-tight">Mirai<span class="text-brand-blue">365</span></h1>
-                </div>
-                <h2 class="text-lg font-bold text-gradient">未来を変える思考法</h2>
-            </div>
+    <!-- カスタムモーダル -->
+    <div id="custom-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-opacity px-4">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl transform scale-95 transition-transform" id="modal-content">
+        </div>
+    </div>
+
+    <!-- ヘッダー＆トライアルバナー -->
+    <header class="fixed top-0 w-full z-40 flex flex-col shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
+        
+        <!-- トライアルバナー -->
+        <div id="trial-banner-container" class="hidden w-full text-[10px] sm:text-xs font-bold py-2 px-4 text-center cursor-pointer relative z-50 transition-colors duration-300">
+            <span id="trial-banner-text"></span>
         </div>
 
-        <div class="w-full bg-white border-t border-slate-50 mt-2">
-            <div class="max-w-md mx-auto flex overflow-x-auto hide-scroll py-2 px-2 gap-2" id="month-nav">
+        <div class="bg-white/80 backdrop-blur-xl border-b border-white/50 relative w-full">
+            <div class="max-w-md mx-auto pt-3 pb-2 px-4 relative">
+                <p class="text-[10px] text-slate-400 font-bold mb-1 text-center tracking-widest pt-1 uppercase">Vision to Reality</p>
+                <div class="flex flex-col items-center justify-center">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg class="w-8 h-8 drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                            <line x1="12" y1="12" x2="12.01" y2="12" stroke-width="3"></line>
+                            <defs><linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1"/><stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1"/></linearGradient></defs>
+                        </svg>
+                        <h1 class="text-2xl font-black text-slate-800 tracking-tight flex items-center">
+                            Mirai<span class="text-brand-blue">365</span>
+                            <span id="pro-badge" class="hidden bg-gradient-to-r from-amber-300 to-orange-500 text-white text-[9px] font-black px-2 py-0.5 rounded-md ml-2 shadow-sm border border-orange-400/50">PRO</span>
+                        </h1>
+                    </div>
                 </div>
+            </div>
+
+            <div class="w-full bg-white/50 border-t border-slate-100 mt-2">
+                <div class="max-w-md mx-auto flex overflow-x-auto hide-scroll py-2 px-2 gap-2" id="month-nav"></div>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-md mx-auto pt-40 px-4 pb-20">
+    <main class="max-w-md mx-auto pt-44 px-4 pb-24"> <!-- pt-44 に調整してバナー領域を確保 -->
         
+        <!-- SETUP VIEW -->
         <div id="view-setup" class="hidden fade-in">
             <div class="text-center mb-6">
-                <span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-1 rounded font-bold">Step 1</span>
-                <h2 class="text-xl font-bold mt-2 text-slate-700">未来の設計図</h2>
-                <p class="text-xs text-slate-400">2026年の理想の自分を描きましょう</p>
+                <span class="bg-slate-800 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">Step 1</span>
+                <h2 class="text-2xl font-black mt-3 text-slate-800">未来の設計図</h2>
+                <p class="text-sm text-slate-500 mt-1">理想の自分を鮮明に描きましょう</p>
             </div>
 
-            <div class="glass-card p-5 mb-6">
-                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Target Year</label>
-                <select id="yearSelect" class="w-full input-clean rounded-lg p-3 font-bold text-cyan-600">
+            <div class="glass-card p-5 mb-6 border-t-4 border-t-blue-500">
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Target Year</label>
+                <select id="yearSelect" class="w-full input-clean rounded-xl p-3 font-black text-xl text-slate-700 text-center cursor-pointer">
                     <option value="2026">2026年</option>
                     <option value="2027">2027年</option>
                     <option value="2028">2028年</option>
@@ -132,77 +163,128 @@
             </div>
 
             <div class="mb-8">
-                <h3 class="text-sm font-bold text-slate-600 mb-3 flex items-center"><i class="fas fa-crown text-cyan-400 mr-2"></i>理想の自分 (5つ)</h3>
-                <input type="text" placeholder="Work: 年商1億円達成..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-work">
-                <input type="text" placeholder="Work: 書籍を出版する..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-work">
-                <input type="text" placeholder="Work: 優秀な右腕を採用..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-work">
-                <input type="text" placeholder="Private: ハワイへ移住..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-private">
-                <input type="text" placeholder="Private: 体脂肪率10%..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-private">
+                <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-100"><i class="fas fa-crown text-amber-400 w-6 text-center"></i>理想の自分 (5つ)</h3>
+                <div class="space-y-2">
+                    <input type="text" placeholder="Work: 年商1億円達成..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-work shadow-sm">
+                    <input type="text" placeholder="Work: 書籍を出版する..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-work shadow-sm">
+                    <input type="text" placeholder="Work: 優秀な右腕を採用..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-work shadow-sm">
+                    <input type="text" placeholder="Private: ハワイへ移住..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-private shadow-sm">
+                    <input type="text" placeholder="Private: 体脂肪率10%..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-private shadow-sm">
+                </div>
             </div>
 
             <div class="mb-8">
-                <h3 class="text-sm font-bold text-slate-600 mb-3 flex items-center"><i class="fas fa-heart text-pink-400 mr-2"></i>その時の感情 (5つ)</h3>
-                <input type="text" placeholder="自信に満ち溢れている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
-                <input type="text" placeholder="経済的な不安がない..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
-                <input type="text" placeholder="家族と笑い合っている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
-                <input type="text" placeholder="感謝で泣いている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
-                <input type="text" placeholder="毎日ワクワクしている..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-feeling">
+                <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-100"><i class="fas fa-heart text-pink-400 w-6 text-center"></i>その時の感情 (5つ)</h3>
+                <div class="space-y-2">
+                    <input type="text" placeholder="自信に満ち溢れている..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-feeling shadow-sm">
+                    <input type="text" placeholder="経済的な不安がない..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-feeling shadow-sm">
+                    <input type="text" placeholder="家族と笑い合っている..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-feeling shadow-sm">
+                    <input type="text" placeholder="感謝で泣いている..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-feeling shadow-sm">
+                    <input type="text" placeholder="毎日ワクワクしている..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-feeling shadow-sm">
+                </div>
             </div>
 
             <div class="mb-8">
-                <h3 class="text-sm font-bold text-slate-600 mb-3 flex items-center"><i class="fas fa-shoe-prints text-blue-400 mr-2"></i>必要な行動 (5つ)</h3>
-                <input type="text" placeholder="毎日コードを書く..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
-                <input type="text" placeholder="週1で交流会に参加..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
-                <input type="text" placeholder="月2冊本を読む..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
-                <input type="text" placeholder="週3回ジムに行く..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
-                <input type="text" placeholder="スマホを夜見ない..." class="w-full input-clean rounded-lg p-3 mb-2 text-sm vision-action">
+                <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-100"><i class="fas fa-shoe-prints text-blue-400 w-6 text-center"></i>必要な行動 (5つ)</h3>
+                <div class="space-y-2">
+                    <input type="text" placeholder="毎日コードを書く..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-action shadow-sm">
+                    <input type="text" placeholder="週1で交流会に参加..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-action shadow-sm">
+                    <input type="text" placeholder="月2冊本を読む..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-action shadow-sm">
+                    <input type="text" placeholder="週3回ジムに行く..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-action shadow-sm">
+                    <input type="text" placeholder="スマホを夜見ない..." class="w-full input-clean rounded-xl p-3 text-sm font-medium vision-action shadow-sm">
+                </div>
             </div>
 
-            <button onclick="saveSetup()" class="w-full bg-brand-gradient text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/30 active:scale-95 transition-transform">
-                未来設定を保存
+            <button onclick="saveSetup()" class="w-full bg-premium-gradient text-white font-bold py-4 rounded-xl shadow-[0_10px_20px_rgba(15,23,42,0.2)] active:scale-95 transition-transform flex justify-center items-center gap-2">
+                <i class="fas fa-save"></i> 未来設定を保存
             </button>
         </div>
 
+        <!-- DASHBOARD VIEW -->
         <div id="view-dashboard" class="fade-in">
-            <div class="flex justify-between items-end mb-6">
-                <div>
-                    <p class="text-xs text-slate-400 font-bold mb-1">TARGET MONTH</p>
-                    <h2 class="text-3xl font-black text-slate-800"><span id="display-month">1</span>月</h2>
+            
+            <div class="glass-card p-4 mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="relative w-16 h-16">
+                        <svg class="w-16 h-16 transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" stroke="#f1f5f9" stroke-width="8" fill="transparent" />
+                            <circle id="annual-progress" cx="50" cy="50" r="40" stroke="url(#progressGradient)" stroke-width="8" fill="transparent" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" class="progress-ring__circle" />
+                            <defs>
+                                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#0ea5e9" />
+                                    <stop offset="100%" stop-color="#3b82f6" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center">
+                            <span class="text-xs font-black text-slate-700" id="progress-percent">0%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Annual Progress</p>
+                        <p class="text-sm font-bold text-slate-800">今年の達成度</p>
+                    </div>
                 </div>
-                <button id="toggle-mode-btn" onclick="toggleReviewMode()" class="bg-white text-slate-600 border border-slate-200 px-4 py-2 rounded-full text-xs font-bold shadow-sm hover:bg-slate-50 transition">
-                    <i class="fas fa-check-circle mr-1 text-cyan-500"></i>振り返りモード
+                
+                <div class="text-center px-3 border-l border-slate-200">
+                    <div class="text-xl mb-0.5" id="streak-icon">🔥</div>
+                    <p class="text-sm font-black text-orange-500"><span id="streak-count">0</span><span class="text-[10px] ml-0.5 text-slate-500">ヶ月</span></p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">Streak</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-end mb-4">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight"><span id="display-month">1</span>月<span class="text-lg text-slate-400 ml-1 font-medium">の目標</span></h2>
+                </div>
+                <button id="toggle-mode-btn" onclick="toggleReviewMode()" class="bg-white text-slate-700 border border-slate-200 px-4 py-2 rounded-full text-xs font-bold shadow-sm hover:bg-slate-50 hover:shadow transition-all flex items-center">
+                    <i class="fas fa-check-circle mr-1.5 text-blue-500"></i>振り返り
                 </button>
             </div>
 
+            <div id="vision-reminder" class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-3 mb-5 flex items-start gap-3 shadow-sm hidden">
+                <div class="bg-white p-2 rounded-lg shadow-sm text-blue-500 shrink-0">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-blue-600 font-bold mb-0.5">未来のあなたからのメッセージ</p>
+                    <p class="text-xs text-slate-700 font-medium" id="reminder-text">...</p>
+                </div>
+            </div>
+
             <div id="mode-edit">
-                <div class="glass-card p-6 mb-4 border-l-4 border-cyan-400">
-                    <div class="flex justify-between mb-3">
-                        <span class="text-xs font-bold text-cyan-600 bg-cyan-50 px-2 py-1 rounded">WORK</span>
-                        <span class="text-[10px] text-slate-400">仕事の目標 (2つ)</span>
+                <div class="glass-card p-5 mb-4 relative overflow-hidden group">
+                    <div class="absolute left-0 top-0 w-1 h-full bg-blue-400"></div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-black text-blue-600 bg-blue-50 px-2 py-1 rounded tracking-widest uppercase">Work</span>
+                        <span class="text-[10px] text-slate-400 font-bold"><i class="fas fa-briefcase mr-1"></i>仕事・ビジネス</span>
                     </div>
-                    <input type="text" id="goal-w1" placeholder="目標1：新規案件を獲得" class="w-full input-clean rounded-lg p-3 mb-3 text-sm">
-                    <input type="text" id="goal-w2" placeholder="目標2：サイトを公開" class="w-full input-clean rounded-lg p-3 text-sm">
+                    <input type="text" id="goal-w1" placeholder="目標1：新規案件を獲得" class="w-full input-clean rounded-xl p-3 mb-3 text-sm font-medium shadow-sm">
+                    <input type="text" id="goal-w2" placeholder="目標2：サイトを公開" class="w-full input-clean rounded-xl p-3 text-sm font-medium shadow-sm">
                 </div>
 
-                <div class="glass-card p-6 mb-8 border-l-4 border-green-400">
-                    <div class="flex justify-between mb-3">
-                        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">PRIVATE</span>
-                        <span class="text-[10px] text-slate-400">プライベートの目標 (1つ)</span>
+                <div class="glass-card p-5 mb-8 relative overflow-hidden">
+                    <div class="absolute left-0 top-0 w-1 h-full bg-emerald-400"></div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded tracking-widest uppercase">Private</span>
+                        <span class="text-[10px] text-slate-400 font-bold"><i class="fas fa-user mr-1"></i>個人・生活</span>
                     </div>
-                    <input type="text" id="goal-p1" placeholder="目標3：週末は映画を見る" class="w-full input-clean rounded-lg p-3 text-sm">
+                    <input type="text" id="goal-p1" placeholder="目標3：週末は映画を見る" class="w-full input-clean rounded-xl p-3 text-sm font-medium shadow-sm">
                 </div>
 
                 <div class="text-center">
-                    <button onclick="saveMonthlyGoals()" class="bg-slate-800 text-white font-bold py-3 px-8 rounded-full shadow-lg active:scale-95 transition-transform">
-                        この目標で決定する
+                    <button onclick="saveMonthlyGoals()" class="w-full bg-slate-800 text-white font-bold py-4 px-8 rounded-xl shadow-[0_10px_20px_rgba(30,41,59,0.2)] active:scale-95 transition-all hover:bg-slate-700">
+                        目標を決定する
                     </button>
                 </div>
             </div>
 
             <div id="mode-review" class="hidden">
-                <div class="bg-gradient-to-r from-cyan-50 to-blue-50 p-4 rounded-xl mb-6 text-center border border-cyan-100">
-                    <p class="text-sm font-bold text-cyan-800">できたことだけに◯をつける</p>
-                    <p class="text-[10px] text-slate-500 mt-1">できなかったことは無視してOK！</p>
+                <div class="bg-premium-gradient text-white p-5 rounded-2xl mb-6 text-center shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 text-white/10 text-6xl"><i class="fas fa-star"></i></div>
+                    <p class="text-sm font-bold text-blue-200 uppercase tracking-widest mb-1">Monthly Review</p>
+                    <p class="text-lg font-black">できたことだけに◯をつける</p>
+                    <p class="text-xs text-slate-300 mt-2 opacity-80">できなかったことは無視！自己肯定感を高めましょう</p>
                 </div>
 
                 <div class="space-y-4 relative min-h-[300px]">
@@ -210,177 +292,438 @@
                     <div id="hanamaru-stamp" class="hidden hanamaru-mark">💮</div>
                 </div>
 
-                <button onclick="finishReview()" class="w-full bg-brand-gradient text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-500/30 mt-6 active:scale-95 transition-transform">
+                <button onclick="finishReview()" class="w-full bg-brand-gradient text-white font-black py-4 rounded-xl shadow-[0_10px_20px_rgba(14,165,233,0.3)] mt-6 active:scale-95 transition-transform text-lg tracking-wider">
                     今月を完了する
                 </button>
             </div>
         </div>
 
+        <!-- MENU VIEW -->
         <div id="view-menu" class="hidden fade-in">
             <div class="text-center mb-6">
-                <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded font-bold">Menu</span>
-                <h2 class="text-xl font-bold mt-2 text-slate-700">メニュー・設定</h2>
+                <span class="bg-slate-200 text-slate-600 text-xs px-3 py-1 rounded-full font-bold shadow-sm">Settings</span>
+                <h2 class="text-2xl font-black mt-3 text-slate-800">メニュー・設定</h2>
             </div>
 
             <div class="glass-card p-6 mb-6">
-                <h3 class="text-sm font-bold text-slate-700 mb-4 border-b border-slate-100 pb-2">💡 Mirai365の使い方</h3>
-                <div class="space-y-6">
-                    <div class="flex gap-3">
-                        <div class="text-2xl bg-cyan-50 w-10 h-10 flex items-center justify-center rounded-lg">🎯</div>
-                        <div>
-                            <h4 class="font-bold text-sm text-cyan-600">1. 未来を決める</h4>
-                            <p class="text-xs text-slate-500 mt-1">「未来設定」タブで、2026年などの理想の姿・感情・行動を5つずつ書き出します。</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <div class="text-2xl bg-blue-50 w-10 h-10 flex items-center justify-center rounded-lg">📅</div>
-                        <div>
-                            <h4 class="font-bold text-sm text-blue-600">2. 今月の目標</h4>
-                            <p class="text-xs text-slate-500 mt-1">未来から逆算して、今月やる「仕事2つ・プライベート1つ」の目標を決めます。</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3">
-                        <div class="text-2xl bg-red-50 w-10 h-10 flex items-center justify-center rounded-lg">💮</div>
-                        <div>
-                            <h4 class="font-bold text-sm text-red-500">3. 振り返り</h4>
-                            <p class="text-xs text-slate-500 mt-1">月末に「振り返りモード」へ。できたことだけに◯をつけて、できないことは無視！自己肯定感を高めます。</p>
-                        </div>
-                    </div>
+                <h3 class="text-sm font-black text-slate-800 mb-5 flex items-center gap-2"><i class="fas fa-gem text-blue-500"></i> プランステータス</h3>
+                <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                    <p id="plan-status-text" class="text-sm text-slate-700 font-bold mb-3"></p>
+                    <button id="btn-unlock-menu" onclick="showUnlockModal()" class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs active:scale-95 transition hover:bg-slate-700 hidden">
+                        PRO版をアンロックする
+                    </button>
                 </div>
             </div>
 
             <div class="glass-card p-6 mb-6">
-                <h3 class="text-sm font-bold text-slate-700 mb-4 border-b border-slate-100 pb-2">⚙️ 設定・デモ</h3>
-                
-                <p class="text-[10px] text-slate-400 mb-3">デモデータを読み込んで動作を確認したり、データをリセットして最初から始めることができます。</p>
+                <h3 class="text-sm font-black text-slate-800 mb-4 border-b border-slate-100 pb-3"><i class="fas fa-cog text-slate-400 mr-2"></i>データ管理</h3>
+                <p class="text-[10px] text-slate-500 mb-4 font-medium">デモデータを読み込んで動作を確認したり、データをリセットして最初から始めることができます。</p>
 
-                <button onclick="loadDemoData()" class="w-full bg-cyan-50 text-cyan-700 border border-cyan-200 font-bold py-3 rounded-xl mb-3 flex items-center justify-center gap-2 active:scale-95 transition">
-                    <i class="fas fa-magic"></i> デモデータをロード
+                <button onclick="loadDemoData()" class="w-full bg-white text-blue-600 border border-blue-200 font-bold py-3.5 rounded-xl mb-3 flex items-center justify-center gap-2 shadow-sm active:scale-95 transition hover:bg-blue-50">
+                    <i class="fas fa-magic"></i> サンプルデータをロード
                 </button>
                 
-                <button onclick="resetData()" class="w-full bg-slate-50 text-slate-500 border border-slate-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition hover:bg-red-50 hover:text-red-500 hover:border-red-200">
-                    <i class="fas fa-trash-alt"></i> データをリセット
+                <button onclick="resetData()" class="w-full bg-white text-red-500 border border-red-200 font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-sm active:scale-95 transition hover:bg-red-50">
+                    <i class="fas fa-trash-alt"></i> 全データをリセット
                 </button>
             </div>
             
-            <div class="text-center text-[10px] text-slate-300">
-                Mirai365 v1.0
+            <div class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                Mirai365 v3.0
             </div>
         </div>
 
     </main>
 
-    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur border-t border-slate-100 pb-safe shadow-[0_-5px_20px_rgba(0,0,0,0.03)] z-50">
-        <div class="max-w-md mx-auto flex justify-between py-2 px-6">
+    <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-lg border-t border-slate-100 pb-safe shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-50">
+        <div class="max-w-md mx-auto flex justify-around py-2 px-2">
             
-            <button onclick="switchView('dashboard')" class="nav-btn active flex flex-col items-center w-1/3 text-slate-400 transition hover:text-cyan-500">
-                <div class="mb-1 text-xl"><i class="fas fa-calendar-day"></i></div>
-                <span class="text-[9px] font-bold">今月の目標</span>
+            <button onclick="switchView('dashboard')" class="nav-btn active flex flex-col items-center w-20 py-1 text-slate-400 transition-all hover:text-blue-500 rounded-xl">
+                <div class="mb-1 text-xl transition-transform duration-300 icon-container"><i class="fas fa-calendar-day"></i></div>
+                <span class="text-[9px] font-bold">Dash</span>
             </button>
             
-            <button onclick="switchView('setup')" class="nav-btn flex flex-col items-center w-1/3 text-slate-400 transition hover:text-cyan-500">
-                <div class="mb-1 text-xl"><i class="fas fa-layer-group"></i></div>
-                <span class="text-[9px] font-bold">未来設定</span>
+            <button onclick="switchView('setup')" class="nav-btn flex flex-col items-center w-20 py-1 text-slate-400 transition-all hover:text-blue-500 rounded-xl">
+                <div class="mb-1 text-xl transition-transform duration-300 icon-container"><i class="fas fa-layer-group"></i></div>
+                <span class="text-[9px] font-bold">Vision</span>
             </button>
 
-            <button onclick="switchView('menu')" class="nav-btn flex flex-col items-center w-1/3 text-slate-400 transition hover:text-cyan-500">
-                <div class="mb-1 text-xl"><i class="fas fa-info-circle"></i></div>
-                <span class="text-[9px] font-bold">メニュー</span>
+            <button onclick="switchView('menu')" class="nav-btn flex flex-col items-center w-20 py-1 text-slate-400 transition-all hover:text-blue-500 rounded-xl">
+                <div class="mb-1 text-xl transition-transform duration-300 icon-container"><i class="fas fa-ellipsis-h"></i></div>
+                <span class="text-[9px] font-bold">Menu</span>
             </button>
 
         </div>
     </nav>
 
+    <style>
+        .nav-btn.active { color: #3b82f6; }
+        .nav-btn.active .icon-container { transform: translateY(-2px) scale(1.1); }
+    </style>
+
     <script>
-        const DB_KEY = 'mirai365_v4_data';
+        // --- Custom Modal System ---
+        function showModal(message, isConfirm = false, onConfirm = null, onCancel = null) {
+            const modal = document.getElementById('custom-modal');
+            const content = document.getElementById('modal-content');
+            
+            let html = `<p class="text-slate-800 font-bold text-center mb-6 whitespace-pre-line leading-relaxed text-sm">${message}</p>`;
+            
+            if (isConfirm) {
+                html += `
+                    <div class="flex gap-3">
+                        <button id="modal-cancel" class="flex-1 bg-slate-100 text-slate-600 font-bold py-3.5 rounded-xl active:scale-95 transition hover:bg-slate-200 text-sm">キャンセル</button>
+                        <button id="modal-ok" class="flex-1 bg-slate-800 text-white font-bold py-3.5 rounded-xl active:scale-95 transition hover:bg-slate-700 shadow-md text-sm">OK</button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <button id="modal-ok" class="w-full bg-blue-500 text-white font-bold py-3.5 rounded-xl active:scale-95 transition hover:bg-blue-600 shadow-md text-sm">OK</button>
+                `;
+            }
+            
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+            
+            const btnOk = document.getElementById('modal-ok');
+            const btnCancel = document.getElementById('modal-cancel');
+            
+            if (btnOk) {
+                btnOk.onclick = () => { modal.classList.add('hidden'); if (onConfirm) onConfirm(); };
+            }
+            if (btnCancel) {
+                btnCancel.onclick = () => { modal.classList.add('hidden'); if (onCancel) onCancel(); };
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // --- Stripe / PRO Unlock System (Worker API Version) ---
+        function showUnlockModal() {
+            const modal = document.getElementById('custom-modal');
+            const content = document.getElementById('modal-content');
+            
+            let html = `
+                <div class="text-center mb-5">
+                    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 border border-slate-100 shadow-inner">
+                        <i class="fas fa-lock text-3xl text-slate-400"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-slate-800 leading-tight mb-2">無料体験が終了しました</h3>
+                    <p class="text-xs text-slate-500 font-medium px-2">これ以降の機能をご利用いただくには、<br>PRO版のロック解除が必要です。</p>
+                </div>
+                
+                <!-- Stripe Payment Link URLをここに設定 -->
+                <a href="https://buy.stripe.com/test_dummy" target="_blank" class="block w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl text-center active:scale-95 transition hover:bg-slate-700 shadow-[0_5px_15px_rgba(30,41,59,0.3)] mb-5">
+                    <i class="fas fa-external-link-alt mr-1"></i> StripeでPRO版を購入する
+                </a>
+                
+                <div class="border-t border-slate-100 pt-5">
+                    <p class="text-[10px] text-slate-500 font-bold mb-3 text-center">ご購入後、サンクスメールに記載された<br><span class="text-blue-500">パスワード</span>を入力してください</p>
+                    <input type="text" id="unlock-password" placeholder="パスワードを入力" class="w-full input-clean rounded-xl p-3.5 mb-3 text-sm font-black tracking-widest shadow-sm text-center border border-slate-200 uppercase transition-colors">
+                    <button id="btn-unlock-submit" onclick="unlockPro(this)" class="w-full bg-blue-500 text-white font-bold py-3.5 rounded-xl active:scale-95 transition hover:bg-blue-600 shadow-md text-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-key"></i> PRO版をアンロック
+                    </button>
+                </div>
+                
+                <button onclick="closeModal()" class="mt-4 w-full text-xs text-slate-400 font-bold py-2 hover:text-slate-600">今はやめておく</button>
+            `;
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+        }
+
+        async function unlockPro(btnElement) {
+            const pwdInput = document.getElementById('unlock-password');
+            const pwd = pwdInput.value.trim().toUpperCase();
+            
+            // ★ Cloudflare Workersをデプロイしたら、このURLを書き換えてください ★
+            // 例: 'https://mirai365.yymmatsu.workers.dev/'
+            const workerUrl = 'https://mirai365.yymmatsu.workers.dev/'; 
+            
+            const originalBtnText = btnElement.innerHTML;
+
+            try {
+                // ボタンをローディング状態にする
+                btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 確認中...';
+                btnElement.disabled = true;
+
+                // Worker APIへ問い合わせ
+                const response = await fetch(workerUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ password: pwd }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const result = await response.json();
+
+                if(result.success) {
+                    appData.isPro = true;
+                    saveData();
+                    closeModal();
+                    updateTrialBanner();
+                    updateMenuStatus();
+                    
+                    setTimeout(() => {
+                        showModal('🎉 PRO版のアンロックが完了しました！\n制限が解除され、すべての機能をご利用いただけます。');
+                    }, 300);
+                } else {
+                    pwdInput.classList.add('border-red-500', 'bg-red-50', 'text-red-600');
+                    pwdInput.value = '';
+                    pwdInput.placeholder = 'パスワードが違います';
+                    setTimeout(() => {
+                        pwdInput.classList.remove('border-red-500', 'bg-red-50', 'text-red-600');
+                        pwdInput.placeholder = 'パスワードを入力';
+                    }, 2000);
+                }
+            } catch (e) {
+                // API通信失敗時のフォールバック処理
+                console.error("API Error:", e);
+                showModal('通信エラーが発生しました。\nURLが正しいか、ネットワーク接続を確認してください。');
+                
+                // ※※ 開発中のみのテスト用フォールバック (本番では削除推奨) ※※
+                if(pwd === 'TEST2026') {
+                    appData.isPro = true;
+                    saveData();
+                    closeModal();
+                    updateTrialBanner();
+                    updateMenuStatus();
+                    setTimeout(() => { showModal('[テスト用] PRO版をアンロックしました'); }, 300);
+                }
+            } finally {
+                // ボタンの状態を戻す
+                btnElement.innerHTML = originalBtnText;
+                btnElement.disabled = false;
+            }
+        }
+
+        // --- App Data ---
+        const DB_KEY = 'mirai365_pro_v3_data'; 
         let currentMonth = new Date().getMonth() + 1;
+        
         let appData = {
             targetYear: '2026',
             vision: { work:['','',''], private:['',''], feeling:['','','','',''], action:['','','','',''] },
-            monthly: {} 
+            monthly: {},
+            trialCount: 0,
+            isPro: false
         };
-        for(let i=1; i<=12; i++) appData.monthly[i] = { w1:'', w2:'', p1:'', done:[false,false,false] };
+        for(let i=1; i<=12; i++) appData.monthly[i] = { w1:'', w2:'', p1:'', done:[false,false,false], isReviewed: false };
 
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
+            updateTrialBanner();
             renderMonthNav();
             selectMonth(currentMonth);
             renderSetup();
+            updateDashboardStats();
+            updateMenuStatus();
         });
 
-        // --- Core Functions ---
         function loadData() {
             const stored = localStorage.getItem(DB_KEY);
             if(stored) {
                 const parsed = JSON.parse(stored);
                 appData = { ...appData, ...parsed };
-                for(let i=1; i<=12; i++) if(!appData.monthly[i]) appData.monthly[i] = { w1:'', w2:'', p1:'', done:[false,false,false] };
+                for(let i=1; i<=12; i++) {
+                    if(!appData.monthly[i]) appData.monthly[i] = { w1:'', w2:'', p1:'', done:[false,false,false], isReviewed: false };
+                }
             }
         }
         function saveData() { localStorage.setItem(DB_KEY, JSON.stringify(appData)); }
 
-        // --- View Switching Logic ---
+        // --- Trial logic ---
+        function checkTrialLimit() {
+            if (!appData.isPro && appData.trialCount >= 3) {
+                showUnlockModal();
+                return false;
+            }
+            return true;
+        }
+
+        function updateTrialBanner() {
+            const banner = document.getElementById('trial-banner-container');
+            const textEl = document.getElementById('trial-banner-text');
+            const proBadge = document.getElementById('pro-badge');
+            
+            // Reset classes
+            banner.className = "w-full text-[10px] sm:text-xs font-bold py-2 px-4 text-center cursor-pointer relative z-50 transition-colors duration-300";
+            
+            if (appData.isPro) {
+                banner.classList.add('hidden');
+                proBadge.classList.remove('hidden');
+                return;
+            }
+            
+            banner.classList.remove('hidden');
+            proBadge.classList.add('hidden');
+            
+            if (appData.trialCount === 0) {
+                banner.classList.add('bg-gradient-to-r', 'from-amber-200', 'to-yellow-400', 'text-yellow-900');
+                textEl.innerText = "🎁 今なら3回まで無料でお試しいただけます（登録不要）";
+                banner.onclick = () => showUnlockModal();
+            } else if (appData.trialCount === 1) {
+                banner.classList.add('bg-gradient-to-r', 'from-amber-100', 'to-orange-300', 'text-orange-900');
+                textEl.innerText = "🎁 無料体験 残り2回（全3回）";
+                banner.onclick = () => showUnlockModal();
+            } else if (appData.trialCount === 2) {
+                banner.classList.add('bg-gradient-to-r', 'from-orange-200', 'to-orange-400', 'text-orange-900');
+                textEl.innerText = "🎁 無料体験 残り1回（全3回）";
+                banner.onclick = () => showUnlockModal();
+            } else {
+                banner.classList.add('bg-gradient-to-r', 'from-red-500', 'to-rose-600', 'text-white', 'animate-pulse');
+                textEl.innerText = "⚠️ 無料体験が終了しました ご購入はこちら→";
+                banner.onclick = () => showUnlockModal();
+            }
+        }
+
+        function updateMenuStatus() {
+            const statusText = document.getElementById('plan-status-text');
+            const unlockBtn = document.getElementById('btn-unlock-menu');
+            
+            if(appData.isPro) {
+                statusText.innerHTML = "🌟 永久PRO版をご利用中<br><span class='text-xs text-slate-500 font-medium mt-1 block'>すべての機能が制限なくお使いいただけます。</span>";
+                unlockBtn.classList.add('hidden');
+            } else {
+                statusText.innerHTML = `無料体験期間中<br><span class='text-xs text-slate-500 font-medium mt-1 block'>残り振り返り回数: ${3 - appData.trialCount} 回</span>`;
+                unlockBtn.classList.remove('hidden');
+            }
+        }
+
+        // --- Core Functions ---
+        function updateDashboardStats() {
+            let totalTasks = 0;
+            let doneTasks = 0;
+            let streak = 0;
+            let currentStreak = 0;
+
+            for(let i=1; i<=12; i++) {
+                const m = appData.monthly[i];
+                let mTotal = 0, mDone = 0;
+                
+                if(m.w1) mTotal++; if(m.w2) mTotal++; if(m.p1) mTotal++;
+                if(m.done[0] && m.w1) mDone++;
+                if(m.done[1] && m.w2) mDone++;
+                if(m.done[2] && m.p1) mDone++;
+
+                totalTasks += mTotal;
+                doneTasks += mDone;
+
+                if(m.isReviewed && mDone > 0) {
+                    currentStreak++;
+                    streak = Math.max(streak, currentStreak);
+                } else if(m.isReviewed) {
+                    currentStreak = 0; 
+                }
+            }
+
+            const percent = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+            
+            const circle = document.getElementById('annual-progress');
+            const circumference = 40 * 2 * Math.PI;
+            circle.style.strokeDashoffset = circumference - (percent / 100) * circumference;
+
+            document.getElementById('streak-count').innerText = currentStreak;
+            const streakIcon = document.getElementById('streak-icon');
+            if(currentStreak > 0) {
+                streakIcon.classList.remove('grayscale', 'opacity-30');
+                streakIcon.classList.add('animate-pulse');
+            } else {
+                streakIcon.classList.add('grayscale', 'opacity-30');
+                streakIcon.classList.remove('animate-pulse');
+            }
+
+            showVisionReminder();
+        }
+
+        function showVisionReminder() {
+            const reminderDiv = document.getElementById('vision-reminder');
+            const reminderText = document.getElementById('reminder-text');
+            
+            let allVisions = [];
+            ['work', 'private', 'feeling', 'action'].forEach(key => {
+                appData.vision[key].forEach(v => { if(v.trim() !== '') allVisions.push(v); });
+            });
+
+            if(allVisions.length > 0) {
+                const randomVision = allVisions[Math.floor(Math.random() * allVisions.length)];
+                reminderText.innerText = `「${randomVision}」`;
+                reminderDiv.classList.remove('hidden');
+            } else {
+                reminderDiv.classList.add('hidden');
+            }
+        }
+
         function switchView(view) {
-            // Hide all views
             document.getElementById('view-setup').classList.add('hidden');
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-menu').classList.add('hidden');
             
-            // Show target view
             document.getElementById(`view-${view}`).classList.remove('hidden');
             
-            // Update Nav Icons
             document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('text-cyan-500', 'active');
+                b.classList.remove('text-blue-500', 'active');
                 b.classList.add('text-slate-400');
             });
             
-            // Find active index based on view name
-            let idx = 0;
-            if(view === 'dashboard') idx = 0;
-            if(view === 'setup') idx = 1;
-            if(view === 'menu') idx = 2;
-
+            let idx = view === 'dashboard' ? 0 : (view === 'setup' ? 1 : 2);
             const activeBtn = document.querySelectorAll('.nav-btn')[idx];
             activeBtn.classList.remove('text-slate-400');
-            activeBtn.classList.add('text-cyan-500', 'active');
+            activeBtn.classList.add('text-blue-500', 'active');
+            
+            if(view === 'dashboard') updateDashboardStats();
+            if(view === 'menu') updateMenuStatus();
             
             window.scrollTo(0,0);
         }
 
-        // --- Demo & Settings Logic ---
         function loadDemoData() {
-            if(!confirm('現在のデータを上書きして、デモデータを読み込みますか？')) return;
-            
-            appData.targetYear = '2026';
-            appData.vision.work = ['年商1億円を達成して法人化', '業界最大手のカンファレンスで登壇', '信頼できる右腕となるNo.2を採用'];
-            appData.vision.private = ['家族全員でハワイに2週間滞在', '体脂肪率12%の健康な体を手に入れる'];
-            appData.vision.feeling = ['根拠のない自信に満ち溢れている', '金銭的な不安が消え、穏やかだ', '仲間への感謝で胸がいっぱいだ', '次の挑戦にワクワクしている', '毎日ぐっすり眠れている'];
-            appData.vision.action = ['毎日コードを100行以上書く', '週に1回、異業種の交流会に参加', 'マーケティングの専門書を月2冊読む', '週3回ジムに通って汗を流す', '日曜日の午前中はスマホをOFFにする'];
-            
-            appData.monthly[currentMonth].w1 = '新規クライアントに5件提案する';
-            appData.monthly[currentMonth].w2 = 'アプリのプロトタイプを完成させる';
-            appData.monthly[currentMonth].p1 = '週末に映画を1本見る';
+            showModal('デモデータを読み込みますか？\n（体験用に全ての機能が解放されたPRO状態になります）', true, () => {
+                appData.isPro = true; // デモデータ時は機能確認のため全解放
+                appData.targetYear = '2026';
+                appData.vision.work = ['年商1億円を達成して法人化', '業界最大手のカンファレンスで登壇', '信頼できる右腕となるNo.2を採用'];
+                appData.vision.private = ['家族全員でハワイに2週間滞在', '体脂肪率12%の健康な体を手に入れる'];
+                appData.vision.feeling = ['根拠のない自信に満ち溢れている', '金銭的な不安が消え、穏やかだ', '仲間への感謝で胸がいっぱいだ'];
+                appData.vision.action = ['毎日コードを100行以上書く', '週に1回、異業種の交流会に参加'];
+                
+                for(let i=1; i<currentMonth; i++) {
+                    appData.monthly[i] = { w1:'過去の仕事1', w2:'過去の仕事2', p1:'過去の私事1', done:[true, true, false], isReviewed: true };
+                }
 
-            saveData();
-            alert('デモデータを読み込みました！「未来設定」や「今月の目標」を確認してください。');
-            switchView('dashboard');
-            selectMonth(currentMonth); // Refresh inputs
-            renderSetup(); // Refresh setup inputs
+                appData.monthly[currentMonth].w1 = '新規クライアントに5件提案する';
+                appData.monthly[currentMonth].w2 = 'アプリのプロトタイプを完成させる';
+                appData.monthly[currentMonth].p1 = '週末に映画を1本見る';
+
+                saveData();
+                updateTrialBanner();
+                
+                showModal('デモデータを読み込みました！', false, () => {
+                    switchView('dashboard');
+                    selectMonth(currentMonth);
+                    renderSetup();
+                });
+            });
         }
 
         function resetData() {
-            if(!confirm('本当に全てのデータを削除して初期化しますか？')) return;
-            localStorage.removeItem(DB_KEY);
-            location.reload();
+            showModal('本当に全てのデータを削除して\n初期化しますか？\n（トライアルの回数もリセットされます）', true, () => {
+                localStorage.removeItem(DB_KEY);
+                location.reload();
+            });
         }
 
-        // --- Navigation Logic ---
         function renderMonthNav() {
             const nav = document.getElementById('month-nav');
             let html = '';
             for(let i=1; i<=12; i++) {
-                html += `<button onclick="selectMonth(${i})" class="month-tab shrink-0 px-4 py-2 rounded-full text-sm font-medium text-slate-500 transition-all hover:bg-slate-100" id="mbtn-${i}">${i}月</button>`;
+                const m = appData.monthly[i];
+                let indicator = '';
+                if(m && m.isReviewed) {
+                    const doneCount = m.done.filter(d=>d).length;
+                    if(doneCount > 0) indicator = `<span class="absolute top-0 right-0 w-2 h-2 bg-orange-500 rounded-full border border-white"></span>`;
+                }
+                html += `<button onclick="selectMonth(${i})" class="month-tab shrink-0 px-5 py-2 rounded-xl text-sm font-medium text-slate-500 transition-all hover:bg-slate-100 relative" id="mbtn-${i}">${i}月${indicator}</button>`;
             }
             nav.innerHTML = html;
         }
@@ -399,26 +742,30 @@
 
             document.getElementById('mode-edit').classList.remove('hidden');
             document.getElementById('mode-review').classList.add('hidden');
-            document.getElementById('toggle-mode-btn').innerHTML = '<i class="fas fa-check-circle mr-1 text-cyan-500"></i>振り返りモード';
+            document.getElementById('toggle-mode-btn').innerHTML = '<i class="fas fa-check-circle mr-1.5 text-blue-500"></i>振り返り';
             document.getElementById('hanamaru-stamp').classList.add('hidden');
         }
 
-        // --- Core Action Logic ---
         function saveMonthlyGoals() {
+            if(!checkTrialLimit()) return; // トライアル制限チェック
+
             const m = currentMonth;
             appData.monthly[m].w1 = document.getElementById('goal-w1').value;
             appData.monthly[m].w2 = document.getElementById('goal-w2').value;
             appData.monthly[m].p1 = document.getElementById('goal-p1').value;
             saveData();
+            updateDashboardStats();
             
             const btn = document.querySelector('#mode-edit button');
-            const originalText = btn.innerText;
-            btn.innerText = '保存しました！';
-            btn.classList.add('bg-green-500');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check mr-2"></i>保存しました';
+            btn.classList.add('bg-emerald-500');
+            btn.classList.remove('bg-slate-800');
             setTimeout(() => {
-                btn.innerText = originalText;
-                btn.classList.remove('bg-green-500');
-            }, 1000);
+                btn.innerHTML = originalText;
+                btn.classList.remove('bg-emerald-500');
+                btn.classList.add('bg-slate-800');
+            }, 1500);
         }
 
         function toggleReviewMode() {
@@ -427,19 +774,21 @@
             const btn = document.getElementById('toggle-mode-btn');
 
             if(review.classList.contains('hidden')) {
+                if(!checkTrialLimit()) return; // 振り返り開始時のトライアル制限チェック
+
                 const mData = appData.monthly[currentMonth];
                 if(!mData.w1 && !mData.w2 && !mData.p1) {
-                    alert('まずは目標を入力しましょう！');
+                    showModal('まずは目標を入力しましょう！');
                     return;
                 }
                 edit.classList.add('hidden');
                 review.classList.remove('hidden');
-                btn.innerHTML = '<i class="fas fa-pen mr-1"></i>編集に戻る';
+                btn.innerHTML = '<i class="fas fa-pen mr-1.5"></i>編集に戻る';
                 renderReviewList();
             } else {
                 edit.classList.remove('hidden');
                 review.classList.add('hidden');
-                btn.innerHTML = '<i class="fas fa-check-circle mr-1 text-cyan-500"></i>振り返りモード';
+                btn.innerHTML = '<i class="fas fa-check-circle mr-1.5 text-blue-500"></i>振り返り';
                 document.getElementById('hanamaru-stamp').classList.add('hidden');
             }
         }
@@ -448,25 +797,26 @@
             const mData = appData.monthly[currentMonth];
             const list = document.getElementById('review-list');
             const items = [
-                { txt: mData.w1, type: 'WORK', idx: 0, color: 'text-cyan-500' },
-                { txt: mData.w2, type: 'WORK', idx: 1, color: 'text-cyan-500' },
-                { txt: mData.p1, type: 'PRIVATE', idx: 2, color: 'text-green-500' }
+                { txt: mData.w1, type: 'Work', idx: 0, color: 'text-blue-500', bg: 'bg-blue-50' },
+                { txt: mData.w2, type: 'Work', idx: 1, color: 'text-blue-500', bg: 'bg-blue-50' },
+                { txt: mData.p1, type: 'Private', idx: 2, color: 'text-emerald-500', bg: 'bg-emerald-50' }
             ];
 
             list.innerHTML = items.map(item => {
                 if(!item.txt) return '';
                 const isDone = mData.done[item.idx];
-                const borderClass = isDone ? 'border-cyan-400 ring-2 ring-cyan-100' : 'border-slate-100';
-                const opacityClass = isDone ? 'opacity-100 scale-100' : 'opacity-0 scale-0';
+                const borderClass = isDone ? 'border-blue-400 ring-4 ring-blue-100 bg-blue-50/50' : 'border-slate-100 bg-white';
+                const opacityClass = isDone ? 'opacity-100 scale-100' : 'opacity-0 scale-50';
+                const checkBg = isDone ? 'bg-blue-500 border-blue-500' : 'bg-slate-50 border-slate-200';
 
                 return `
-                <div class="glass-card p-4 flex justify-between items-center cursor-pointer transition-all active:scale-95 ${borderClass}" onclick="toggleCheck(${item.idx}, this)">
-                    <div>
-                        <span class="text-[10px] font-bold ${item.color}">${item.type}</span>
-                        <p class="text-slate-700 font-bold text-lg">${item.txt}</p>
+                <div class="glass-card p-5 flex justify-between items-center cursor-pointer transition-all duration-300 active:scale-95 ${borderClass}" onclick="toggleCheck(${item.idx}, this)">
+                    <div class="pr-4">
+                        <span class="text-[9px] font-black uppercase tracking-widest ${item.color} ${item.bg} px-2 py-1 rounded mb-2 inline-block">${item.type}</span>
+                        <p class="text-slate-700 font-bold text-lg leading-tight">${item.txt}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full border-2 border-slate-200 flex items-center justify-center bg-white shadow-sm">
-                        <i class="fas fa-check text-cyan-500 text-xl transition-all duration-300 transform ${opacityClass}"></i>
+                    <div class="w-12 h-12 shrink-0 rounded-full border-2 flex items-center justify-center shadow-inner transition-colors duration-300 ${checkBg}">
+                        <i class="fas fa-check text-white text-xl transition-all duration-300 transform ${opacityClass}"></i>
                     </div>
                 </div>
                 `;
@@ -477,34 +827,75 @@
             const mData = appData.monthly[currentMonth];
             mData.done[idx] = !mData.done[idx];
             saveData();
-            // Re-render styles logic simplified for brevity
+            
             const icon = el.querySelector('.fa-check');
+            const circle = el.querySelector('.w-12');
+            
             if(mData.done[idx]) {
-                icon.classList.remove('opacity-0', 'scale-0');
+                icon.classList.remove('opacity-0', 'scale-50');
                 icon.classList.add('opacity-100', 'scale-100');
-                el.classList.remove('border-slate-100');
-                el.classList.add('border-cyan-400', 'ring-2', 'ring-cyan-100');
-                confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 }, colors: ['#06b6d4', '#3b82f6'] });
+                circle.classList.remove('bg-slate-50', 'border-slate-200');
+                circle.classList.add('bg-blue-500', 'border-blue-500');
+                el.classList.remove('border-slate-100', 'bg-white');
+                el.classList.add('border-blue-400', 'ring-4', 'ring-blue-100', 'bg-blue-50/50');
+                confetti({ particleCount: 60, spread: 80, origin: { y: 0.7 }, colors: ['#0ea5e9', '#3b82f6', '#fbbf24'] });
             } else {
-                icon.classList.add('opacity-0', 'scale-0');
+                icon.classList.add('opacity-0', 'scale-50');
                 icon.classList.remove('opacity-100', 'scale-100');
-                el.classList.remove('border-cyan-400', 'ring-2', 'ring-cyan-100');
-                el.classList.add('border-slate-100');
+                circle.classList.add('bg-slate-50', 'border-slate-200');
+                circle.classList.remove('bg-blue-500', 'border-blue-500');
+                el.classList.remove('border-blue-400', 'ring-4', 'ring-blue-100', 'bg-blue-50/50');
+                el.classList.add('border-slate-100', 'bg-white');
+            }
+            updateDashboardStats();
+        }
+
+        // 月の振り返りを完了する処理 (ここでトライアル回数を消費する)
+        function finishReview() {
+            const mData = appData.monthly[currentMonth];
+            mData.isReviewed = true;
+            saveData();
+            updateDashboardStats();
+            renderMonthNav();
+
+            if(mData.done.some(d=>d)) {
+                document.getElementById('hanamaru-stamp').classList.remove('hidden');
+                var duration = 3000;
+                var end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ef4444', '#f59e0b'] });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#0ea5e9', '#3b82f6'] });
+                    if (Date.now() < end) requestAnimationFrame(frame);
+                }());
+
+                setTimeout(() => { proceedAfterReview(false); }, 3500);
+            } else {
+                proceedAfterReview(true);
             }
         }
 
-        function finishReview() {
-            const mData = appData.monthly[currentMonth];
-            if(mData.done.some(d=>d)) {
-                document.getElementById('hanamaru-stamp').classList.remove('hidden');
-                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#ef4444', '#06b6d4', '#fbbf24'] });
-                setTimeout(() => {
-                    if(confirm(`${currentMonth}月完了！次の月に進みますか？`)) selectMonth(currentMonth<12?currentMonth+1:1);
-                    else toggleReviewMode();
-                }, 3000);
+        // トライアル回数の消費と次への遷移
+        function proceedAfterReview(isZeroDone) {
+            // トライアル回数を1消費
+            if (!appData.isPro && appData.trialCount < 3) {
+                appData.trialCount++;
+                saveData();
+                updateTrialBanner();
+            }
+
+            let msg = isZeroDone ? 
+                'できたことがなくても大丈夫。\n振り返りをした事自体が素晴らしい一歩です！\n来月へ進みましょう。' : 
+                `Excellent!\n${currentMonth}月の振り返りを完了しました。\n次の月に進みますか？`;
+
+            // 3回消費し切った直後の場合、購入モーダルを出す
+            if (!appData.isPro && appData.trialCount >= 3) {
+                showUnlockModal();
             } else {
-                alert('できたことがなくても大丈夫。来月へ進みましょう！');
-                selectMonth(currentMonth<12?currentMonth+1:1);
+                showModal(msg, !isZeroDone, () => {
+                    selectMonth(currentMonth<12?currentMonth+1:1);
+                }, () => {
+                    if(!isZeroDone) toggleReviewMode();
+                });
             }
         }
 
@@ -516,8 +907,10 @@
             appData.vision.feeling = collect('.vision-feeling');
             appData.vision.action = collect('.vision-action');
             saveData();
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            alert('未来設定を保存しました！');
+            
+            showVisionReminder();
+            confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, zIndex: 200 });
+            showModal('未来設定を保存しました！\nこのビジョンを胸に、今日から行動しましょう。');
         }
         
         function renderSetup() {
